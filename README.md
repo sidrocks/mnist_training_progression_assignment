@@ -7,7 +7,7 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
   ***Target***
   <li> Do the basic setup - transforms, data loader, basic network architecture, basic training and test loop </li>
   <li> Make a lighter model </li>
-  <li> Include Batch Normalization to increase model efficicency </li>
+  <li> Include Batch Normalization to increase model efficicency. Stabilize training, faster convergence, better generalization </li>
   
   ***Results***
   <li> Parameters: 10970 </li>
@@ -23,5 +23,20 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
 
   Since our target is to reach 99.4% test accuracy with fewer parameters <8k, to achieve generalization other techniques such as regularization, data augmentation, GAP need to be explored
 
+***Model : <a href="https://github.com/sidrocks/mnist_training_progression_assignment/blob/main/Model_2.py"> Model_2.py </a>***
 
+  ***Target***
+  <li> Make the model lighter < 8k </li>
+  <li> Use Global Average Pooling, remove the large dense layer </li>
+  <li> Include dropouts</li>
+  
+  ***Results***
+  <li> Parameters: 6664 </li>
+  <li> Best Training Accuracy: 99.02 </li>
+  <li> Best Test Accuracy: 99.36 </li>
 
+  ***Analysis***
+  1. Lighter Model and Regularization using GAP is showing better stability, 99%+ accuracy observed from 6th epoch onwards
+  2. The consistent positive gap between Training and Test accuracy indicates the model not over-fitting and seems to be generalizing well
+  3. Iterations are more efficient and seems to be inching more towards our goal, still short of our 99.4% target
+  
