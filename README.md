@@ -335,9 +335,9 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
     5. Add LR scheduler - Use CosineAnnealingLR scheduler
 
   ***Results***
-  <li> Parameters:  </li>
-  <li> Best Training Accuracy:  </li>
-  <li> Best Test Accuracy:  </li>
+  <li> Parameters: 7876 </li>
+  <li> Best Training Accuracy: 98.93 </li>
+  <li> Best Test Accuracy: 99.44 </li>
 
   ***Analysis***
    1. Model is starting to under-fit, probably due to addition of augmentations in training dataset.
