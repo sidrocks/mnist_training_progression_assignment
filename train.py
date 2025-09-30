@@ -158,13 +158,14 @@ if __name__ == "__main__":
     print("Starting master training script...")
 
     # Run Model 1
-    #run_model_training(Net1, "Model_1", epochs=15, lr=0.01, momentum=0.9)
+    run_model_training(Net1, "Model_1", epochs=15, lr=0.01, momentum=0.9)
 
     # Run Model 2
-    #run_model_training(Net2, "Model_2", epochs=15, lr=0.01, momentum=0.9)
+    run_model_training(Net2, "Model_2", epochs=15, lr=0.01, momentum=0.9)
 
     # Run Model 3
     # Model_3 used dropout and CosineAnnealingLR previously, so configure accordingly
     run_model_training(Net3, "Model_3", epochs=15, lr=0.09, momentum=0.9, weight_decay=1e-5, scheduler_type='CosineAnnealingLR')
 
     print("\nMaster training script finished.")
+
