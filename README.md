@@ -23,7 +23,7 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
 
   Since our target is to reach 99.4% test accuracy with fewer parameters <8k, to achieve generalization other techniques such as regularization, data augmentation, GAP need to be explored
 
-  *** Model Architecture and Training Logs***
+***Model Architecture and Training Logs***
 
         --- Starting training for Model_1 ---
       ----------------------------------------------------------------
@@ -137,6 +137,30 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
       
       Test set: Average loss: 0.0343, Accuracy: 9898/10000 (98.98%)
 
+**Receptive Field (RF)  Calculations:**
+
+*   **Initial Input:**
+    *   RF = 1
+*   **Layer 1: `convblock1`**
+    *   RF = 1 + (3 - 1) * 1 = 3
+*   **Layer 2: `convblock2`**
+    *   RF = 3 + (3 - 1) * 1 = 5
+*   **Layer 3: `convblock3`**
+    *   RF = 5 + (3 - 1) * 1 = 7
+*   **Layer 4: `pool1` (MaxPool2d)**
+    *   RF = 7 + (2 - 1) * 1 = 8
+*   **Layer 5: `convblock4`**
+    *   RF = 8 + (1 - 1) * 2 = 8
+*   **Layer 6: `convblock5`**
+    *   RF = 8 + (3 - 1) * 2 = 12
+*   **Layer 7: `convblock6`**
+    *   RF = 12 + (3 - 1) * 2 = 16
+*   **Layer 8: `convblock7`**
+    *   RF = 16 + (1 - 1) * 2 = 16
+*   **Layer 9: `convblock8`**
+    *   RF = 16 + (7 - 1) * 2 = 28
+
+
 ***Model : <a href="https://github.com/sidrocks/mnist_training_progression_assignment/blob/main/Model_2.py"> Model_2.py </a>***
 
   ***Target***
@@ -154,7 +178,7 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
   2. The consistent positive gap between Training and Test accuracy indicates the model not over-fitting and seems to be generalizing well
   3. Iterations are more efficient and seems to be inching more towards our goal, still short of our 99.4% target
   
-  *** Model Architecture and Training Logs***
+  ***Model Architecture and Training Logs***
 
       ----------------------------------------------------------------
             Layer (type)               Output Shape         Param #
@@ -271,6 +295,184 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
     Test set: Average loss: 0.0206, Accuracy: 9936/10000 (99.36%)
     
     --- Finished training for Model_2 ---
-    
-    
-    
+
+**Receptive Field (RF) for `Model_2.py`:**
+
+*   **Initial Input:**
+    *   RF = 1
+*   **Layer 1: `convblock1`** (kernel_size=3, stride=1, padding=0)
+    *   RF = 1 + (3 - 1) * 1 = 3
+*   **Layer 2: `convblock2`** (kernel_size=3, stride=1, padding=0)
+    *   RF = 3 + (3 - 1) * 1 = 5
+*   **Layer 3: `pool1` (MaxPool2d)** (kernel_size=2, stride=2)
+    *   RF = 5 + (2 - 1) * 1 = 6
+*   **Layer 4: `convblock3`** (kernel_size=1, stride=1, padding=0)
+    *   RF = 6 + (1 - 1) * 2 = 6
+*   **Layer 5: `convblock4`** (kernel_size=3, stride=1, padding=0)
+    *   RF = 6 + (3 - 1) * 2 = 10
+*   **Layer 6: `convblock5`** (kernel_size=3, stride=1, padding=0)
+    *   RF = 10 + (3 - 1) * 2 = 14
+*   **Layer 7: `convblock6`** (kernel_size=1, stride=1, padding=0)
+    *   RF = 14 + (1 - 1) * 2 = 14
+*   **Layer 8: `convblock7`** (kernel_size=3, stride=1, padding=0)
+    *   RF = 14 + (3 - 1) * 2 = 18
+*   **Layer 9: `convblock8`** (kernel_size=1, stride=1, padding=0)
+    *   RF = 18 + (1 - 1) * 2 = 18
+*   **Layer 10: `gap` (AvgPool2d)** (kernel_size=6, stride=1)
+    *   RF = 18 + (6 - 1) * 2 = 28
+
+  
+  ***Model : <a href="https://github.com/sidrocks/mnist_training_progression_assignment/blob/main/Model_3.py"> Model_3.py </a>***
+
+  ***Target***
+    1. Increase Model Capacity from 6.6k to 7.8k for better capacity
+    2. Perform Max pooling
+    3. Add Drop out value to a low 0.01, add to layers
+    4. Apply data augmentation: RandomRotation, RandomAffine
+    5. Add LR scheduler - Use CosineAnnealingLR scheduler
+
+  ***Results***
+  <li> Parameters:  </li>
+  <li> Best Training Accuracy:  </li>
+  <li> Best Test Accuracy:  </li>
+
+  ***Analysis***
+   1. Model is starting to under-fit, probably due to addition of augmentations in training dataset.
+   2. By adding rotations (augmentations) in training data, test accuracy has gone up indicating test data set is containing rotations in datasets
+   3. StepLR scheduler was plateauing around 99.8% accuracy, changing scheduler to CosineAnnealingLR scheduler and increasing SGD optimizer LR to 0.08 helped in increasing the test accuracy to 99.4 consistently across multiple epochs
+   4. Data augmentation adds robustness, helping model to generalize better to unseen data. It also helped in pushing test accuracy past 99.4%.
+   5. Model hit 99.4% consistently from Epoch 10 onwards, hence meeting the target goal.
+   6. Despite model being lightweight (<8k parameters) and final accuracy of 99.44% with stable loss of around 0.0183, models is lightweight, efficient, regularized and optimized
+
+  ***Model Architecture and Training Logs***
+  
+        ----------------------------------------------------------------
+              Layer (type)               Output Shape         Param #
+        ================================================================
+                  Conv2d-1            [-1, 8, 26, 26]              72
+             BatchNorm2d-2            [-1, 8, 26, 26]              16
+                    ReLU-3            [-1, 8, 26, 26]               0
+                  Conv2d-4           [-1, 10, 24, 24]             720
+             BatchNorm2d-5           [-1, 10, 24, 24]              20
+                    ReLU-6           [-1, 10, 24, 24]               0
+               MaxPool2d-7           [-1, 10, 12, 12]               0
+                  Conv2d-8            [-1, 8, 12, 12]              80
+                  Conv2d-9           [-1, 16, 10, 10]           1,152
+            BatchNorm2d-10           [-1, 16, 10, 10]              32
+                   ReLU-11           [-1, 16, 10, 10]               0
+                Dropout-12           [-1, 16, 10, 10]               0
+                 Conv2d-13             [-1, 32, 8, 8]           4,608
+            BatchNorm2d-14             [-1, 32, 8, 8]              64
+                   ReLU-15             [-1, 32, 8, 8]               0
+                Dropout-16             [-1, 32, 8, 8]               0
+              MaxPool2d-17             [-1, 32, 4, 4]               0
+                 Conv2d-18              [-1, 8, 4, 4]             256
+            BatchNorm2d-19              [-1, 8, 4, 4]              16
+                   ReLU-20              [-1, 8, 4, 4]               0
+                Dropout-21              [-1, 8, 4, 4]               0
+                 Conv2d-22             [-1, 10, 2, 2]             720
+            BatchNorm2d-23             [-1, 10, 2, 2]              20
+                   ReLU-24             [-1, 10, 2, 2]               0
+      AdaptiveAvgPool2d-25             [-1, 10, 1, 1]               0
+                 Conv2d-26             [-1, 10, 1, 1]             100
+      ================================================================
+      Total params: 7,876
+      Trainable params: 7,876
+      Non-trainable params: 0
+      ----------------------------------------------------------------
+      Input size (MB): 0.00
+      Forward/backward pass size (MB): 0.40
+      Params size (MB): 0.03
+      Estimated Total Size (MB): 0.43
+      ----------------------------------------------------------------
+      CosineAnnealingLR
+      EPOCH: 0
+      Loss=0.0568 Batch_id=937 Accuracy=92.37: 100%|█████████████████████████████████████| 938/938 [00:47<00:00, 19.93it/s] 
+      
+      Test set: Average loss: 0.0672, Accuracy: 9797/10000 (97.97%)
+      
+      EPOCH: 1
+      Loss=0.0074 Batch_id=937 Accuracy=96.92: 100%|█████████████████████████████████████| 938/938 [00:46<00:00, 20.06it/s] 
+      
+      Test set: Average loss: 0.0425, Accuracy: 9870/10000 (98.70%)
+      
+      EPOCH: 2
+      Loss=0.0968 Batch_id=937 Accuracy=97.50: 100%|█████████████████████████████████████| 938/938 [01:25<00:00, 11.03it/s] 
+      
+      Test set: Average loss: 0.0358, Accuracy: 9883/10000 (98.83%)
+      
+      EPOCH: 3
+      Loss=0.0228 Batch_id=937 Accuracy=97.74: 100%|█████████████████████████████████████| 938/938 [00:49<00:00, 18.85it/s] 
+      
+      Test set: Average loss: 0.0320, Accuracy: 9902/10000 (99.02%)
+      
+      EPOCH: 4
+      Loss=0.1046 Batch_id=937 Accuracy=98.03: 100%|█████████████████████████████████████| 938/938 [00:55<00:00, 16.79it/s] 
+      
+      Test set: Average loss: 0.0331, Accuracy: 9888/10000 (98.88%)
+      
+      EPOCH: 5
+      Loss=0.0144 Batch_id=937 Accuracy=98.17: 100%|█████████████████████████████████████| 938/938 [00:56<00:00, 16.65it/s] 
+      
+      Test set: Average loss: 0.0250, Accuracy: 9916/10000 (99.16%)
+      
+      EPOCH: 6
+      Loss=0.0128 Batch_id=937 Accuracy=98.34: 100%|█████████████████████████████████████| 938/938 [00:59<00:00, 15.68it/s] 
+      
+      Test set: Average loss: 0.0356, Accuracy: 9892/10000 (98.92%)
+      
+      EPOCH: 7
+      Loss=0.0255 Batch_id=937 Accuracy=98.55: 100%|█████████████████████████████████████| 938/938 [00:56<00:00, 16.66it/s] 
+      
+      Test set: Average loss: 0.0211, Accuracy: 9931/10000 (99.31%)
+      
+      EPOCH: 8
+      Loss=0.2084 Batch_id=937 Accuracy=98.57: 100%|█████████████████████████████████████| 938/938 [02:41<00:00,  5.80it/s] 
+      
+      Test set: Average loss: 0.0228, Accuracy: 9928/10000 (99.28%)
+      
+      EPOCH: 9
+      Loss=0.1587 Batch_id=937 Accuracy=98.68: 100%|█████████████████████████████████████| 938/938 [00:50<00:00, 18.67it/s] 
+      
+      Test set: Average loss: 0.0229, Accuracy: 9924/10000 (99.24%)
+      
+      EPOCH: 10
+      Loss=0.1840 Batch_id=937 Accuracy=98.71: 100%|█████████████████████████████████████| 938/938 [00:51<00:00, 18.29it/s] 
+      
+      Test set: Average loss: 0.0186, Accuracy: 9943/10000 (99.43%)
+      
+      EPOCH: 11
+      Loss=0.0335 Batch_id=937 Accuracy=98.79: 100%|█████████████████████████████████████| 938/938 [00:57<00:00, 16.38it/s] 
+      
+      Test set: Average loss: 0.0198, Accuracy: 9938/10000 (99.38%)
+      
+      EPOCH: 12
+      Loss=0.0285 Batch_id=937 Accuracy=98.93: 100%|█████████████████████████████████████| 938/938 [00:52<00:00, 17.79it/s] 
+      
+      Test set: Average loss: 0.0196, Accuracy: 9935/10000 (99.35%)
+      
+      EPOCH: 13
+      Loss=0.1769 Batch_id=937 Accuracy=98.92: 100%|█████████████████████████████████████| 938/938 [00:52<00:00, 18.03it/s] 
+      
+      Test set: Average loss: 0.0183, Accuracy: 9947/10000 (99.47%)
+      
+      EPOCH: 14
+      Loss=0.0598 Batch_id=937 Accuracy=98.91: 100%|█████████████████████████████████████| 938/938 [00:50<00:00, 18.68it/s] 
+      
+      Test set: Average loss: 0.0183, Accuracy: 9944/10000 (99.44%)
+
+  **Receptive Field (RF) for `Model_3.py`:**
+  - Input: 28x28, rf=1, jump=1
+  - convblock1: Conv3x3 s1 → out 26x26, rf=3, jump=1
+  - convblock2: Conv3x3 s1 → out 24x24, rf=5, jump=1
+  - pool1: MaxPool2x2 s2 → out 12x12, rf=6, jump=2
+  - convblock3: Conv1x1 s1 → out 12x12, rf=6, jump=2
+  - convblock4: Conv3x3 s1 → out 10x10, rf=10, jump=2
+  - convblock5: Conv3x3 s1 → out 8x8, rf=14, jump=2
+  - pool2: MaxPool2x2 s2 → out 4x4, rf=16, jump=4
+  - convblock6: Conv1x1 s1 → out 4x4, rf=16, jump=4
+  - convblock7: Conv3x3 s1 → out 2x2, rf=24, jump=4
+  - gap: GlobalAvgPool over 2x2 → out 1x1, rf=28, jump=4
+  - convblock8: Conv1x1 s1 → out 1x1, rf=28, jump=4
+
+  
