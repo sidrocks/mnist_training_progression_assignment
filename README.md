@@ -328,6 +328,7 @@ The goal is to achieve 99.4% test accuracy consistently, with less than or equal
   ***Model : <a href="https://github.com/sidrocks/mnist_training_progression_assignment/blob/main/Model_3.py"> Model_3.py </a>***
 
   ***Target***
+  
     1. Increase Model Capacity from 6.6k to 7.8k for better capacity
     2. Perform Max pooling
     3. Add Drop out value to a low 0.01, add to layers
